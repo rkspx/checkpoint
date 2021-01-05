@@ -117,6 +117,7 @@ func (c *Session) Do(action string, payload map[string]interface{}, result inter
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-chkp-sid", c.ID)
+	req.Header.Set("Connection", "keep-alive")
 
 	res, err := c.client.Do(req)
 	if err != nil {
