@@ -60,14 +60,35 @@ func parseError(err FailResponse) error {
 }
 
 func isObjectLockedError(err FailResponse) bool {
+	if len(err.Errors) > 0 {
+		for _, e := range err.Errors {
+			if strings.Contains(e.Message, "is locked by another session.") {
+				return true
+			}
+		}
+	}
 	return err.Code == "generic_err_object_locked" || (err.Code == "generic_error" && strings.Contains(err.Message, "is locked by another session."))
 }
 
 func isObjectNameExistError(err FailResponse) bool {
+	if len(err.Errors) > 0 {
+		for _, e := range err.Errors {
+			if strings.Contains(e.Message, "More than one object named") {
+				return true
+			}
+		}
+	}
 	return err.Code == "err_validation_failed" && err.StatusCode == 0 && strings.Contains(err.Message, "More than one object named")
 }
 
 func isIPAddressEixtsError(err FailResponse) bool {
+	if len(err.Warnings) > 0 {
+		for _, e := range err.Warnings {
+			if strings.Contains(e.Message, "Multiple objects have the same IP address ") {
+				return true
+			}
+		}
+	}
 	return err.Code == "err_validation_failed" && err.StatusCode == 0 && strings.Contains(err.Message, "Multiple objects have the same IP address ")
 }
 
